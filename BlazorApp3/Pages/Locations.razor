@@ -1,0 +1,32 @@
+﻿@page "/locations"
+
+@inject IJSRuntime JSRuntime
+
+    <h2>NZ Covid19 Locations</h2>
+
+<body>
+
+    <button id="Refresh" class="btn  btn-danger btn-primary" @onclick="GetNZcovid19Locations"></button> 
+
+    <div id="map" style="height:800px;width:100%;"> </div>
+
+</body>
+
+
+@code {
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await GetNZcovid19Locations();
+        }
+    }
+
+    protected  async Task GetNZcovid19Locations()
+    {
+        await JSRuntime.InvokeVoidAsync("showNZcovid19Locations", new string[] {"https://nzcovid19api.xerra.nz/locations/json"});
+        StateHasChanged();
+    }
+
+}

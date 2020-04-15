@@ -1,0 +1,150 @@
+﻿@page "/"
+@namespace BlazorApp3.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NZ Covid19</title>
+    <base href="~/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <app>
+        @(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
+    </app>
+
+    <script src="_framework/blazor.server.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+
+    <script src='http://www.bing.com/api/maps/mapcontrol?key=Aim3O3iwKByoB8i41aGn0VjUEn_I9jCOb43wRIXE7Dsi6LW-8CCQIqI2Ao8mcC5K'></script>
+
+    <!-- Reference the included moment.js javascript file. -->
+    <script src="_content/ChartJs.Blazor/moment-with-locales.min.js" type="text/javascript" language="javascript"></script>
+
+    <!-- Reference the included ChartJs javascript file. -->
+    <script src="_content/ChartJs.Blazor/Chart.min.js" type="text/javascript" language="javascript"></script>
+
+    <!-- This is the glue between the C# code and the ChartJs charts -->
+    <script src="_content/ChartJs.Blazor/ChartJsBlazorInterop.js" type="text/javascript" language="javascript"></script>
+
+    <!-- Some styling -->
+    <link rel="stylesheet" href="_content/ChartJs.Blazor/ChartJSBlazor.css" />
+
+
+    <script>
+
+        var map, infobox;
+        function showNZcovid19Locations(locationsUri) {
+            console.log(locationsUri);
+
+            $.ajax({
+                url: locationsUri,
+                type: "GET",
+                success: function (result) {
+                    var c19CasesData = JSON.parse(result);
+                    console.log(c19CasesData);
+
+                    var initLocations = initLocationData();
+                    console.log(initLocations);
+
+                    createLocationsForMap(initLocations, c19CasesData);
+                },
+                error: function (error) {
+                    console.log(error)
+                }
+            });
+        }
+
+        function initLocationData() {
+            var locations = new Array();
+            locations[0] = { latitude: -36.8567678, longitude: 174.7683987, LocationName: 'Auckland', CaseCount: 0 };
+            locations[1] = { latitude: -37.7570993, longitude: 175.5057939, LocationName: 'Bay of Plenty', CaseCount: 0 };
+            locations[2] = { latitude: -44.5233973, longitude: 170.437046, LocationName: 'Canterbury', CaseCount: 0 };
+            locations[3] = { latitude: -41.4552384, longitude: 174.8326879, LocationName: 'Capital and Coast', CaseCount: 0 };
+            locations[4] = { latitude: 37.1778371, longitude: 174.666809, LocationName: 'Counties Manukau', CaseCount: 0 };
+            locations[5] = { latitude: 39.5916957, longitude: 176.2674083, LocationName: "Hawke's Bay", CaseCount: 0 };
+            locations[6] = { latitude: -41.2205354, longitude: 174.7096547, LocationName: 'Hutt Valley', CaseCount: 0 };
+            locations[7] = { latitude: -41.1877747, longitude: 174.1731032, LocationName: 'Lakes', CaseCount: 0 };
+            locations[8] = { latitude: -40.3450607, longitude: 175.6234371, LocationName: 'MidCentral', CaseCount: 0 };
+
+            return locations;
+        }
+
+        function createLocationsForMap(locationsData, c19CasesData) {
+            map = new Microsoft.Maps.Map('#map', {
+                credentials: 'Aim3O3iwKByoB8i41aGn0VjUEn_I9jCOb43wRIXE7Dsi6LW-8CCQIqI2Ao8mcC5K',
+                center: { latitude: -36.8567678, longitude: 174.7683987 }
+            });
+
+            //Create an infobox at the center of the map but don't show it.
+            infobox = new Microsoft.Maps.Infobox(map.getCenter(), {
+                visible: false
+            });
+
+            //Assign the infobox to a map instance.
+            infobox.setMap(map);
+
+
+            var totalCount = 0;
+            for (var i = 0; i < locationsData.length; i++) {
+
+                locationsData[i].CaseCount = c19CasesData[locationsData[i].LocationName].CaseCount;
+                totalCount += locationsData[i].CaseCount;
+
+                var pinText = (locationsData[i].LocationName + " CaseCount:" + locationsData[i].CaseCount);
+
+                var pin = new Microsoft.Maps.Pushpin(locationsData[i], {
+                    color: 'blue',
+                    text: (locationsData[i].CaseCount + '')
+                });
+
+                //Store some metadata with the pushpin.
+                pin.metadata = {
+                    title: locationsData[i].LocationName,
+                    description: pinText
+                };
+
+                //Add a click event handler to the pushpin.
+                Microsoft.Maps.Events.addHandler(pin, 'click', pushpinClicked);
+
+                //Add pushpin to the map.
+                map.entities.push(pin);
+            }
+
+            $("#Refresh").text("Total Cases:" + totalCount + " (Refresh)");
+
+        }
+
+
+        function pushpinClicked(e) {
+            //Make sure the infobox has metadata to display.
+            if (e.target.metadata) {
+
+                //Set the infobox options with the metadata of the pushpin.
+                infobox.setOptions({
+                    location: e.target.getLocation(),
+                    title: e.target.metadata.title,
+                    description: e.target.metadata.description,
+                    visible: true
+                });
+            }
+        }
+
+        function showInfoboxByKey(Key) {
+
+            //Look up the  pushpin by gridKey.
+            var selectedPin = map.entities.get(gridKey);
+
+            //Show an infobox for the cluster or pushpin.
+            Microsoft.Maps.Events.invoke(selectedPin, "click");
+        }
+
+
+    </script>
+</body>
+</html>
