@@ -9,58 +9,131 @@
 @using ChartJs.Blazor.ChartJS.Common.Properties
 @using ChartJs.Blazor.Util
 
-<h1>Polar Area Chart</h1>
+    <style type="text/css">
+        .wrap {
+            display: flex;
+            justify-content: space-between;
+        }
 
-<ChartJsPolarAreaChart @ref="_polarChartJs" Config="@_config" Width="600" Height="300" />
+        .left, .right, .middle {
+            height: 800px;
+        }
+
+        .left {
+            width: 50%;
+            background: #00ffff;
+        }
+
+        .right {
+            width: 50%;
+            background: #00ffff;
+        }
+
+        .middle {
+            background: #00ffff;
+            width: 1%;
+            margin: 0 0px;
+        }
+    </style>
+
+    <h1>NZ Covid19 STATS</h1>
+
+    <body>
+        <label class="alert-danger">Total Confirmed: @cseStatsData[0].ConfirmedCasesTotal</label>
+        <label class="alert-dark">Total Probable: @cseStatsData[0].ProbableCasesTotal</label>
+        <label class="alert-info">Total Recovered: @cseStatsData[0].RecoveredCasesTotal</label>
+
+        <label class="  bg-success">New in 24h Confirmed: @cseStatsData[0].ConfirmedCasesNew24h</label>
+        <label class=" bg-warning"> Probable: @cseStatsData[0].RecoveredCasesNew24h</label>
+        <label class=" bg-dark" > Recovered: @cseStatsData[0].RecoveredCasesNew24h</label>
+        <div class="wrap">
+            <div id="map" class="left">
+                <ChartJsPolarAreaChart @ref="_polarChartJs" Config="@_config" Width="500" Height="500" />
+
+            </div>
+            <div id="map" class="right">
+                <ChartJsPolarAreaChart @ref="_polarChartJs24" Config="@_config24" Width="500" Height="500" />
+            </div>
+        </div>
+    </body>
 
 
+    @code {
+        private PolarAreaConfig _config;
+        private ChartJsPolarAreaChart _polarChartJs;
 
-@code {
-    private PolarAreaConfig _config;
-    private ChartJsPolarAreaChart _polarChartJs;
+        private PolarAreaConfig _config24;
+        private ChartJsPolarAreaChart _polarChartJs24;
 
-    private string caseStatsUrl = "https://nzcovid19api.xerra.nz/casestats/json";
+        private string caseStatsUrl = "https://nzcovid19api.xerra.nz/casestats/json";
 
-    protected override async void OnInitialized()
-    {
-        _config = new PolarAreaConfig
+        private PolarAreaConfig initCofig(string textString)
         {
-            Options = new PolarAreaOptions
+
+            PolarAreaConfig _configTemp = new PolarAreaConfig
             {
-                Title = new OptionsTitle
+                Options = new PolarAreaOptions
                 {
-                    Display = true,
-                    Text = "Sample chart from Blazor"
-                },
-                Responsive = true,
-                Animation = new ArcAnimation
-                {
-                    AnimateRotate = true,
-                    AnimateScale = true
+                    Title = new OptionsTitle
+                    {
+                        Display = true,
+                        Text = textString,
+                    },
+                    Responsive = true,
+                    Animation = new ArcAnimation
+                    {
+                        AnimateRotate = true,
+                        AnimateScale = true
+                    }
                 }
-            }
-        };
+            };
+
+            return _configTemp;
+        }
+
+        private PolarAreaDataset initPolarAreaSet(double[] areaSetData)
+        {
+
+            PolarAreaDataset polarAreaSet = new PolarAreaDataset
+            {
+                BackgroundColor = new[] { "red", "yellow", "blue", "green", "black" },
+                BorderWidth = 2,
+                HoverBackgroundColor = ColorUtil.RandomColorString(),
+                HoverBorderColor = ColorUtil.RandomColorString(),
+                HoverBorderWidth = 2,
+                BorderColor = "#ffffff",
+            };
+
+            polarAreaSet.Data.AddRange(areaSetData);
+
+            return polarAreaSet;
+        }
 
         NZC19CaseStatsData[] cseStatsData;
-
-        cseStatsData = await CaseStatsService.GetCaseStatsAsync(DateTime.Now, caseStatsUrl);
-
-        _config.Data.Labels.AddRange(new[] { "A", "B", "C", "D" });
-
-        var polarAreaSet = new PolarAreaDataset
+        protected override async void OnInitialized()
         {
-            BackgroundColor = new[] { ColorUtil.RandomColorString(), ColorUtil.RandomColorString(), ColorUtil.RandomColorString(), ColorUtil.RandomColorString() },
-            BorderWidth = 2,
-            HoverBackgroundColor = ColorUtil.RandomColorString(),
-            HoverBorderColor = ColorUtil.RandomColorString(),
-            HoverBorderWidth = 2,
-            BorderColor = "#ffffff",
-        };
+            _config = initCofig("TOTAL CASES");
+            _config24 = initCofig("CASES NEW in 24 HOURS");
 
-        polarAreaSet.Data.AddRange(new double[] { 4, 5, 6, 7 });
-        _config.Data.Datasets.Add(polarAreaSet);
-    }
 
-}
+            _config.Data.Labels.AddRange(new[] { "ConfirmedCasesTotal", "ProbableCasesTotal", "RecoveredCasesTotal", "HospitalisedCasesTotal", "DeathCasesTotal" });
+            _config24.Data.Labels.AddRange(new[] { "ConfirmedCasesNew24h", "ProbableCasesNew24h", "RecoveredCasesNew24h", "HospitalisedCasesNew24h", "DeathCasesNew24h" });
+
+            cseStatsData = await CaseStatsService.GetCaseStatsAsync(DateTime.Now, caseStatsUrl);
+
+
+            var polarAreaSet = initPolarAreaSet(new double[] { cseStatsData[0].ConfirmedCasesTotal, cseStatsData[0].ProbableCasesTotal, cseStatsData[0].RecoveredCasesTotal,
+                        cseStatsData[0].HospitalisedCasesTotal, cseStatsData[0].DeathCasesTotal });
+            _config.Data.Datasets.Add(polarAreaSet);
+
+
+            var polarAreaSet24 = initPolarAreaSet(new double[] { cseStatsData[0].ConfirmedCasesNew24h, cseStatsData[0].ProbableCasesNew24h, cseStatsData[0].RecoveredCasesNew24h,
+                        cseStatsData[0].HospitalisedCasesNew24h, cseStatsData[0].DeathCasesNew24h });
+            _config24.Data.Datasets.Add(polarAreaSet24);
+
+            StateHasChanged();
+        }
+
+      }
 
 

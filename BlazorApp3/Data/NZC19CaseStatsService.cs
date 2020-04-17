@@ -9,7 +9,6 @@ namespace BlazorApp3.Data
     {
         public Task<NZC19CaseStatsData[]> GetCaseStatsAsync(DateTime startDate, string url)
         {
-
             string c19CaseStats = HttpClientAPI.HttpGet(url);
 
             NZC19CaseStatsData caseStats = HttpClientAPI.ToObject<NZC19CaseStatsData>(c19CaseStats);

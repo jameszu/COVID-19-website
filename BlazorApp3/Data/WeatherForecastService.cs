@@ -1,6 +1,7 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -17,26 +18,26 @@ namespace BlazorApp3.Data
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
 
-        public Task<WeatherForecast[]>  GetForecastAsync(DateTime startDate)
+        public Task<WeatherForecast[]> GetForecastAsync(DateTime startDate, int amountDays)
         {
             var rng = new Random();
-
-            //Coordinate cd = Geocode.GetCoordinates("auckland");
-
-            string C19Cases = HttpClientAPI.HttpGet("https://nzcovid19api.xerra.nz/cases/json");
-
-             dynamic m = HttpClientAPI.ToObject<dynamic>(C19Cases);
-
-
-            return Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            return Task.FromResult(Enumerable.Range(1, amountDays * 24).Select(index => new WeatherForecast
             {
-                Date = startDate.AddDays(index),
+                Date = startDate.AddHours(index).AddMilliseconds(rng.NextDouble() * 1000),
                 TemperatureC = rng.Next(-20, 55),
                 Summary = Summaries[rng.Next(Summaries.Length)]
             }).ToArray());
-
         }
 
+        public Task<WeatherForecast[]> GetStaticForecastAsync(DateTime startDate, int amountDays)
+        {
+            return Task.FromResult(Enumerable.Range(1, amountDays * 24).Select(index => new WeatherForecast
+            {
+                Date = startDate.AddHours(index),
+                TemperatureC = (int)(index * 2.3),
+                Summary = Summaries[index % Summaries.Length]
+            }).ToArray());
+        }
     }
 
 

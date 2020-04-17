@@ -1,0 +1,177 @@
+﻿@page "/cases"
+
+@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.ChartJS
+@using ChartJs.Blazor.ChartJS.Common.Properties
+@using ChartJs.Blazor.ChartJS.Common.Enums
+@using ChartJs.Blazor.ChartJS.Common.Axes
+@using ChartJs.Blazor.ChartJS.Common.Axes.Ticks
+@using ChartJs.Blazor.ChartJS.Common.Handlers
+@using ChartJs.Blazor.ChartJS.Common.Time
+@using ChartJs.Blazor.ChartJS.LineChart
+
+@using BlazorApp3.Data
+
+
+
+@using ChartJs.Blazor.Util
+@inject IJSRuntime JsRuntime
+
+<h1>NZ Covid19 Cases</h1>
+<ChartJsLineChart @ref="_lineChartJs" Config="@_lineConfig" Width="600" Height="200" />
+
+<div class="row">
+    <button class="btn btn-primary" @onclick="OnClickConfirmed">Confirmed Fill On/Off</button>
+    <button class="btn btn-primary" @onclick="OnClickProbable">Probable Fill On/Off</button>
+</div>
+
+@code
+{
+    LineConfig _lineConfig;
+    ChartJsLineChart _lineChartJs;
+    const string DeCh = "uk";
+
+    LineDataset<TimeTuple<int>> _tempDataSetConfirmed;
+    LineDataset<TimeTuple<int>> _tempDataSetProbable;
+
+    private bool _localeChangeWasAttempted = false;
+
+    //@inject NZC19CaseService CaseService
+    //NZC19CaseData[] CaseData;
+    readonly NZC19CaseService CaseService = new NZC19CaseService();
+
+    private async Task TryChangeLocale()
+    {
+        if (_localeChangeWasAttempted) return;
+        _localeChangeWasAttempted = true;
+
+        var locales = await JsRuntime.GetAvailableLocales();
+        bool localeChanged = false;
+        if (locales != null && locales.Contains(DeCh))
+        {
+            localeChanged = await JsRuntime.ChangeLocale(DeCh);
+        }
+
+        if (!localeChanged) Console.WriteLine($"Locale was not changed to {DeCh}. Either it already is {DeCh} or this locale doesn't exist.");
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _lineConfig = new LineConfig
+        {
+            Options = new LineOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = false,
+                    Text = ""
+                },
+                Legend = new Legend
+                {
+                    Position = Position.Right,
+                    Labels = new LegendLabelConfiguration
+                    {
+                        UsePointStyle = true
+                    }
+                },
+                Tooltips = new Tooltips
+                {
+                    Mode = InteractionMode.Nearest,
+                    Intersect = false
+                },
+                Scales = new Scales
+                {
+                    xAxes = new List<CartesianAxis>
+    {
+                        new TimeAxis
+                        {
+                            Distribution = TimeDistribution.Linear,
+                            Ticks = new TimeTicks
+                            {
+                                Source = TickSource.Data
+                            },
+                            Time = new TimeOptions
+                            {
+                                Unit = TimeMeasurement.Day,
+                                Round = TimeMeasurement.Day,
+                                TooltipFormat = "DD.MM.YYYY",
+                                DisplayFormats = TimeDisplayFormats.DE_CH
+                            },
+                            ScaleLabel = new ScaleLabel
+                            {
+                                LabelString = "Date"
+                            }
+                        }
+                    }
+                },
+                Hover = new LineOptionsHover
+                {
+                    Intersect = true,
+                    Mode = InteractionMode.Y
+                }
+            }
+        };
+
+        var nzC19Cases = await CaseService.GetCasesAsync("https://nzcovid19api.xerra.nz/cases/json");
+
+        _tempDataSetConfirmed = new LineDataset<TimeTuple<int>>
+        {
+            BackgroundColor = ColorUtil.ColorString(0, 255, 0, 1.0),
+            BorderColor = ColorUtil.ColorString(0, 0, 255, 1.0),
+            PointBackgroundColor = ColorUtil.RandomColorString(),
+
+            Label = "CONFIRMED CASES No.",
+            Fill = false,
+            BorderWidth = 1,
+            PointRadius = 3,
+            PointBorderWidth = 2,
+
+            SteppedLine = SteppedLine.False
+        };
+
+
+        _tempDataSetProbable = new LineDataset<TimeTuple<int>>
+        {
+            BackgroundColor = ColorUtil.ColorString(255, 0, 0, 2.0),
+            BorderColor = ColorUtil.ColorString(0, 255, 0, 2.0),
+            PointBackgroundColor = ColorUtil.RandomColorString(),
+
+            Label = "PROBABLE CASES No.",
+            Fill = false,
+            BorderWidth = 1,
+            PointRadius = 3,
+            PointBorderWidth = 2,
+
+            SteppedLine = SteppedLine.False
+        };
+
+        _tempDataSetConfirmed.AddRange(nzC19Cases.Where(p => "confirmed".Equals(p.CaseType)).Select(p => new TimeTuple<int>(new Moment(p.ReportedDate), p.CaseNumber)));
+
+        _tempDataSetProbable.AddRange(nzC19Cases.Where(p => "probable".Equals(p.CaseType)).Select(p => new TimeTuple<int>(new Moment(p.ReportedDate), p.CaseNumber)));
+
+
+        _lineConfig.Data.Datasets.Add(_tempDataSetConfirmed);
+        _lineConfig.Data.Datasets.Add(_tempDataSetProbable);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await TryChangeLocale();
+    }
+
+    private async Task OnClickConfirmed()
+    {
+        _tempDataSetConfirmed.Fill = !_tempDataSetConfirmed.Fill;
+
+        await _lineChartJs.Update();
+    }
+
+
+    private async Task OnClickProbable()
+    {
+        _tempDataSetProbable.Fill = !_tempDataSetProbable.Fill;
+
+        await _lineChartJs.Update();
+    }
+}
