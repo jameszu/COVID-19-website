@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lee\\source\\repos\\BlazorApp3\\BlazorApp3\\BlazorApp3.csproj": {}
+    "D:\\All_documents\\Github\\BlazorApp3\\COVID-19-website\\BlazorApp3\\BlazorApp3.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lee\\source\\repos\\BlazorApp3\\BlazorApp3\\BlazorApp3.csproj": {
+    "D:\\All_documents\\Github\\BlazorApp3\\COVID-19-website\\BlazorApp3\\BlazorApp3.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lee\\source\\repos\\BlazorApp3\\BlazorApp3\\BlazorApp3.csproj",
+        "projectUniqueName": "D:\\All_documents\\Github\\BlazorApp3\\COVID-19-website\\BlazorApp3\\BlazorApp3.csproj",
         "projectName": "BlazorApp3",
-        "projectPath": "C:\\Users\\lee\\source\\repos\\BlazorApp3\\BlazorApp3\\BlazorApp3.csproj",
-        "packagesPath": "C:\\Users\\lee\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lee\\source\\repos\\BlazorApp3\\BlazorApp3\\obj\\",
+        "projectPath": "D:\\All_documents\\Github\\BlazorApp3\\COVID-19-website\\BlazorApp3\\BlazorApp3.csproj",
+        "packagesPath": "C:\\Users\\lixin\\.nuget\\packages\\",
+        "outputPath": "D:\\All_documents\\Github\\BlazorApp3\\COVID-19-website\\BlazorApp3\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\lee\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\lixin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -90,6 +90,24 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.0.1, 3.0.1]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[3.0.3, 3.0.3]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.0.0, 3.0.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.0.0, 3.0.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -98,7 +116,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -10,6 +10,9 @@
 @using ChartJs.Blazor.Util
 
     <style type="text/css">
+        .idk{
+            font-family:'Roboto'
+        }
         .wrap {
             display: flex;
             justify-content: space-between;
@@ -21,16 +24,16 @@
 
         .left {
             width: 50%;
-            background: #00ffff;
+            background: #ffffff;
         }
 
         .right {
             width: 50%;
-            background: #00ffff;
+            background: #ffffff;
         }
 
         .middle {
-            background: #00ffff;
+            background: #ffffff;
             width: 1%;
             margin: 0 0px;
         }
@@ -39,13 +42,14 @@
     <h1>NZ Covid19 STATS</h1>
 
     <body>
-        <label class="alert-danger">Total Confirmed: @cseStatsData[0].ConfirmedCasesTotal</label>
-        <label class="alert-dark">Total Probable: @cseStatsData[0].ProbableCasesTotal</label>
-        <label class="alert-info">Total Recovered: @cseStatsData[0].RecoveredCasesTotal</label>
+        <label class="idk">Total Confirmed: @cseStatsData[0].ConfirmedCasesTotal</label>
+        <label class="idk">Total Probable: @cseStatsData[0].ProbableCasesTotal</label>
+        <label class="idk">Total Recovered: @cseStatsData[0].RecoveredCasesTotal</label>
 
-        <label class="  bg-success">New in 24h Confirmed: @cseStatsData[0].ConfirmedCasesNew24h</label>
-        <label class=" bg-warning"> Probable: @cseStatsData[0].RecoveredCasesNew24h</label>
-        <label class=" bg-dark" > Recovered: @cseStatsData[0].RecoveredCasesNew24h</label>
+        <label class="idk">New in 24h</label>
+        <label class="idk">Confirmed: @cseStatsData[0].ConfirmedCasesNew24h</label>
+        <label class="idk"> Probable: @cseStatsData[0].RecoveredCasesNew24h</label>
+        <label class="idk"> Recovered: @cseStatsData[0].RecoveredCasesNew24h</label>
         <div class="wrap">
             <div id="map" class="left">
                 <ChartJsPolarAreaChart @ref="_polarChartJs" Config="@_config" Width="500" Height="500" />
