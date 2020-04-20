@@ -10,21 +10,57 @@
 @using ChartJs.Blazor.Util
 
     <style type="text/css">
+        h1{
+            margin-bottom:20px;
+        }
         body {
+            
             background-color: #F2F4F4;
         }
-        .card{
-            background: #ffffff;
+
+        
+        .card {
+            margin-top: 10px;
+            margin-bottom: 10px;
+
+            display: flex;
+            flex-direction: row;
+            flex-wrap: warp;
+            justify-content: space-around;
         }
-        .idk{
-            font-family:'Roboto'
+
+        .card div {
+            margin-top: 0.4rem;
+            margin-bottom: 0.4rem;
+            margin-left: 50px;
+            margin-right: 50px;
+            border-radius: 6px;
+            white-space: nowrap;
+            background: #F2F4F4;
+        }
+        .idk {
+            background-color: white;
+            text-align: center;
+        }
+        .type{
+            font-size: 12px;
+        }
+        .number{
+            font-size:19px;
+        }
+        .increase{
+            font-size: 11px;
         }
         .wrap {
             display: flex;
             justify-content: space-between;
+            background: #ffffff;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         .left, .right, .middle {
+            position: relative;
             height: 800px;
         }
 
@@ -45,18 +81,35 @@
         }
     </style>
 
-    <h1>New Zealand Covid-19 Current Status</h1>
+    <h1 style="text-align: center" >New Zealand Covid-19 Current Status</h1>
 
     <body>
         <div class="card">
-            <label class="idk">Total Confirmed: @cseStatsData[0].ConfirmedCasesTotal</label>
-            <label class="idk">Total Probable: @cseStatsData[0].ProbableCasesTotal</label>
-            <label class="idk">Total Recovered: @cseStatsData[0].RecoveredCasesTotal</label>
-
-            <label class="idk">New in 24h</label>
-            <label class="idk">Confirmed: @cseStatsData[0].ConfirmedCasesNew24h</label>
-            <label class="idk"> Probable: @cseStatsData[0].RecoveredCasesNew24h</label>
-            <label class="idk"> Recovered: @cseStatsData[0].RecoveredCasesNew24h</label>
+            <div class="idk">
+                <div class="type">Confirmed</div>
+                <div class="number" style="color: rgb(255, 96, 60)">@cseStatsData[0].ConfirmedCasesTotal</div>
+                <div class="increase" style="color: rgb(255, 96, 60)">@cseStatsData[0].RecoveredCasesNew24h today</div>
+            </div>
+            <div class="idk">
+                <div class="type">Probable </div>
+                <div class="number" style="color: rgb(0, 124, 242)">@cseStatsData[0].ProbableCasesTotal</div>
+                <div class="increase" style="color: rgb(0, 124, 242)">@cseStatsData[0].ProbableCasesNew24h today</div>
+            </div>
+            <div class="idk">
+                <div class="type">Recovered </div>
+                <div class="number" style="color: rgb(0, 193, 119)">@cseStatsData[0].RecoveredCasesTotal</div>
+                <div class="increase" style="color: rgb(0, 193, 119)">@cseStatsData[0].RecoveredCasesNew24h today</div>
+            </div>
+            <div class="idk">
+                <div class="type">in Hospital </div>
+                <div class="number" style="color: rgb(157, 113, 234)">@cseStatsData[0].HospitalisedCasesTotal</div>
+                <div class="increase" style="color: rgb(157, 113, 234)">@cseStatsData[0].HospitalisedCasesNew24h today</div>
+            </div>
+            <div class="idk">
+                <div class="type">Deaths </div>
+                <div class="number" style="color: rgb(193, 23, 0)">@cseStatsData[0].DeathCasesTotal</div>
+                <div class="increase" style="color: rgb(193, 23, 0)">@cseStatsData[0].DeathCasesNew24h today</div>
+            </div>
         </div>
         <div class="wrap">
             <div id="map" class="left">
