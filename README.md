@@ -8,7 +8,7 @@ This site contains the following information from trust resources including:
 
 The API we are using comes form [this](https://nzcovid19api.xerra.nz/). <br/>
 This project was inspired from [this site](https://covid-19-au.com/). Due to the limited knowledge of javascript and node.js, we cannot follow the [template](https://ncov.shanyue.tech/) which covid 19 au is based on.
-## UPDATE: 
+## UPDATE 
 The detailed cases from this API had been archived which make the location and cases section unable to load. We are currently fixing this issue.<br/>
 
 
