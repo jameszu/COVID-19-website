@@ -7,23 +7,37 @@ html, body {
 a, .btn-link {
     color: #0366d6;
 }
-.near {
-    background: #eb94d0;
-    position: absolute;
-    bottom: 1;
-}
-.button {
-    background: #eb94d0;
+.myButton {
     position: relative;
-    border-radius: 30px;
-    padding: 50px 10px;
+    bottom: 0;
+    box-shadow: inset 0px 1px 0px 0px #ffffff;
+    background: linear-gradient(to bottom, #ffffff 5%, #f6f6f6 100%);
+    background-color: #ffffff;
+    border-radius: 4px;
+    border: 0.1px solid #dcdcdc;
+    display: inline-block;
+    cursor: pointer;
+    color: #666666;
+    font-size: 11px;
+    padding: 2px 5px;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0px 0px 0px #ffffff;
+    text-align: center;
 }
+
+
+.myButton:active {
+    position: relative;
+    top: 1px;
+}
+
 .ending{
     position: absolute;
     bottom: 0;
     margin-left: 1rem;
     margin-right: 2rem;
-    color: black;
+    color: lightslategrey;
     font-size: 9px;
     text-align: center;
 }
